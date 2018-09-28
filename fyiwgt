@@ -1,0 +1,106 @@
+// if (typeof fyi_c != "undefined" &amp;&amp; fyi_c &amp;&amp; typeof fyi_w != "undefined" &amp;&amp; fyi_w) {
+        if (typeof jQuery == 'undefined'){
+           var script = document.createElement('script');
+           script.type = "text/javascript";
+           script.src = "https://code.jquery.com/jquery-3.2.1.min.js";
+           script.onload = function() {
+                var jQuery = window.jQuery;
+                fyIframe();
+            };
+           document.getElementsByTagName('head')[0].appendChild(script);
+        }else{
+            fyIframe();
+        }
+//}
+        
+function fyIframe(){
+        var fyiwg = rCookie("fyiwg");
+        var fyifx = rCookie("fuifx");
+        var r = document.referrer; 
+        var l = location.hostname; 
+        var u = location.href; 
+   
+        s=1;
+    
+        if(u.indexOf("utm_source") > 0 || u.indexOf("gclid") > 0){
+            s=0;
+        }else if(fyifx!= ""){
+            var r = rCookie("fyi_r"); 
+            var l = rCookie("fyi_l"); 
+            var u = rCookie("fyi_u"); 
+        }
+        
+        if (fyiwg == "" || s==0) {
+            if(l=="localhost"){
+               dco=l;
+            }else{
+               dco = (l.match(/([^.]+)\.\w{2,3}(?:\.\w{2})?$/) || [])[0];
+            }
+            document.cookie = "fyiwg=1;domain=."+dco+";expires=0; path=/";
+            document.cookie = "fyi_r="+r+";domain=."+dco+";expires=0; path=/";
+            document.cookie = "fyi_l="+l+";domain=."+dco+";expires=0; path=/";
+            document.cookie = "fyi_u="+u+";domain=."+dco+";expires=0; path=/";
+        }else{
+            var r = rCookie("fyi_r");
+            var l = rCookie("fyi_l");
+            var u = rCookie("fyi_u");
+        }
+        
+        if (typeof fyi_m != "undefined" && fyi_m=="preview"){
+            fyi_m=fyi_m;
+        }else{
+            fyi_m="";
+        }
+        
+        var fyi_furl='';
+        var fu=new URL(u);
+        var fyi_qV = fu.search.replace('?', '').split('&amp;'); //window.location
+        var fyi_qL = ''; 
+        if (fyi_qV != '') { 
+            for (i = 0; i < fyi_qV.length; i++) { 
+                if(fyi_qL!='')fyi_qL=fyi_qL+"||";
+                fyi_qL=fyi_qL+fyi_qV[i].split('=')[0]+"@@"+fyi_qV[i].split('=')[1];
+            } 
+        }
+        var fyi_r = r; //document.referrer; 
+        //url_track ='http://bigwigmediademo.com/university_counselling_system/?formsource=widget';
+        url_track ='http://bigwigmediademo.com/vedica_fyi/fyi_management/landingPage_api/?formsource=widget';
+        
+        
+        
+        jQuery(".fyi_wgts").each(function() {
+            fyi_height=jQuery(this).data("height");
+            //fyi_c=jQuery(this).data("c");
+            fyi_w=jQuery(this).data("w");
+        
+            fyi_furl=url_track+"&amp;r="+fyi_r+"&amp;q="+fyi_qL+"&amp;w="+fyi_w+"&amp;m="+fyi_m;
+            
+            if(fyi_height=="parent"){
+               var fyi_height=document.getElementsByClassName("fyi_wgts")[0].parentElement.clientHeight;
+               fyi_height=fyi_height+"px";
+            }
+        
+            jQuery(this).html('');
+			
+			
+			
+			jQuery('<iframe>', {
+            src: fyi_furl,
+			allow:"sync-xhr *",
+            frameborder: 0,
+            height: fyi_height,
+			width: '100%'
+            }).appendTo(this);
+        
+        });
+}
+function rCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return '';
+}
